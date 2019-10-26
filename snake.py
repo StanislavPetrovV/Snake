@@ -3,7 +3,7 @@ import pygame
 
 class Snake:
     COLOR = (0, 220, 0)
-    SIDE = 30
+    SIDE = 25
     lenght = 2
     vel = 10
 

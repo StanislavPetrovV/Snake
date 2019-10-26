@@ -4,10 +4,11 @@ import tkinter as tk
 import os
 from snake import *
 from food import *
+from background import *
 
 
 class Game:
-    SIZE = WIDTH, HEIGHT = (450, 450)
+    SIZE = WIDTH, HEIGHT = (600, 600)
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
     fps = 15
@@ -20,6 +21,7 @@ class Game:
         self.surf = pygame.display.set_mode(self.SIZE)
         pygame.display.set_caption('Snake')
         self.clock = pygame.time.Clock()
+        self.bg = BG(self.surf)
         self.snake = Snake(self.surf)
         self.food = Food(self.surf)
         self.font_score = pygame.font.Font(None, 22)
@@ -67,6 +69,7 @@ class Game:
         self.surf.fill(self.BLACK)
         self.surf.blit(self.font_score.render(f'SCORE: {self.score}', 1, (255, 165, 0)), (self.WIDTH - 80, 5))
 
+        self.bg.draw(self.snake.direction)
         self.food.add_food()
         self.snake.move_snake(self.snake.direction)
 
@@ -77,6 +80,7 @@ class Game:
         while True:
             self.surf.blit(self.font_end.render(f'YOUR SCORE: {self.score}', 1, (255, 165, 0)),
                            (self.WIDTH // 2 - 130, self.HEIGHT // 3))
+            self.clock.tick(self.fps)
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == QUIT:

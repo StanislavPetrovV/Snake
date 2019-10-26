@@ -4,8 +4,7 @@ from random import randint
 
 class Food:
     COLOR = (255, 0, 0)
-    SIDE = 30
-    dy = 1
+    SIDE = 25
 
     def __init__(self, surface):
         self.surface = surface
