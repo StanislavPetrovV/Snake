@@ -1,3 +1,4 @@
+import pygame
 import sys
 from pygame.locals import *
 import tkinter as tk
