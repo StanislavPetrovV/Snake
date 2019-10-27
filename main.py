@@ -18,7 +18,13 @@ class Game:
     def __init__(self):
         os.environ['SDL_VIDEO_WINDOW_POS'] = f'{(tk.Tk().winfo_screenwidth() - self.WIDTH) // 2},' \
                                              f'{(tk.Tk().winfo_screenheight() - self.HEIGHT) // 2}'
+        pygame.mixer.pre_init(44100, -16, 2, 2048)
+        pygame.mixer.init()
         pygame.init()
+        pygame.mixer.music.load('System/Sounds/music.mid')
+        pygame.mixer.music.play(6)
+        self.sound_game_over = pygame.mixer.Sound('System/Sounds/game_over.wav')
+        self.sound_eat_food = pygame.mixer.Sound('System/Sounds/eat_food.wav')
         self.surf = pygame.display.set_mode(self.SIZE)
         pygame.display.set_caption('Snake')
         self.clock = pygame.time.Clock()
@@ -51,20 +57,17 @@ class Game:
                     self.snake.direction = 'd'
 
             if self.food.is_eaten(self.snake.x, self.snake.y):
+                self.sound_eat_food.play()
                 self.snake.add_lenght()
                 self.food.new_foodxy()
                 self.score += 1
                 self.fps += 1
 
-            if len(self.snake.XY) != len(set(self.snake.XY)):
-                break
-
             if (self.snake.x < 0 or self.snake.y < 0 or self.snake.x + self.snake.SIDE > self.WIDTH
-                    or self.snake.y + self.snake.SIDE > self.HEIGHT):
-                break
+                    or self.snake.y + self.snake.SIDE > self.HEIGHT) or len(self.snake.XY) != len(set(self.snake.XY)):
+                self.game_over()
 
             self.draw()
-        self.game_over()
 
     def draw(self):
         self.surf.fill(self.BLACK)
@@ -78,6 +81,8 @@ class Game:
         self.clock.tick(self.fps)
 
     def game_over(self):
+        pygame.mixer.music.stop()
+        self.sound_game_over.play()
         while True:
             self.surf.blit(self.font_end.render(f'YOUR SCORE: {self.score}', 1, (255, 165, 0)),
                            (self.WIDTH // 2 - 130, self.HEIGHT // 3))
