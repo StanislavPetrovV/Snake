@@ -6,13 +6,14 @@ import os
 from snake import *
 from food import *
 from background import *
+from effects import *
 
 
 class Game:
-    SIZE = WIDTH, HEIGHT = (600, 600)
+    SIZE = WIDTH, HEIGHT = (800, 800)
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
-    fps = 15
+    fps = 20
     score = 0
 
     def __init__(self):
@@ -22,17 +23,23 @@ class Game:
         pygame.mixer.init()
         pygame.init()
         pygame.mixer.music.load('System/Sounds/music.mid')
-        pygame.mixer.music.play(6)
+        pygame.mixer.music.play(9)
+        pygame.display.set_caption('Snake')
+
         self.sound_game_over = pygame.mixer.Sound('System/Sounds/game_over.wav')
         self.sound_eat_food = pygame.mixer.Sound('System/Sounds/eat_food.wav')
         self.surf = pygame.display.set_mode(self.SIZE)
-        pygame.display.set_caption('Snake')
         self.clock = pygame.time.Clock()
+
         self.bg = BG(self.surf)
+        self.effect = Effect(self.surf)
+        self.effect_trigger = False
         self.snake = Snake(self.surf)
         self.food = Food(self.surf)
+
         self.font_score = pygame.font.Font(None, 22)
         self.font_end = pygame.font.Font(None, 48)
+
         self.play()
 
     def play(self):
@@ -56,10 +63,11 @@ class Game:
                 if self.snake.direction != 'u':
                     self.snake.direction = 'd'
 
-            if self.food.is_eaten(self.snake.x, self.snake.y):
+            if self.food.is_eaten(self.snake.x, self.snake.y, self.snake.SIDE):
                 self.sound_eat_food.play()
                 self.snake.add_lenght()
-                self.food.new_foodxy()
+                self.effect_trigger = True
+                self.food.new_foodxy(self.snake.SIDE)
                 self.score += 1
                 self.fps += 1
 
@@ -75,7 +83,11 @@ class Game:
 
         self.bg.draw(self.snake.direction)
         self.food.add_food()
+
         self.snake.move_snake(self.snake.direction)
+
+        self.effect.run(self.effect_trigger, self.snake.x, self.snake.y)
+        self.effect_trigger = False
 
         pygame.display.update()
         self.clock.tick(self.fps)

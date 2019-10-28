@@ -1,9 +1,8 @@
 import pygame
 
-
 class Snake:
-    COLOR = (0, 220, 0)
-    SIDE = 25
+    COLOR = [0, 170, 0]
+    SIDE = 15
     lenght = 2
     vel = 10
 
@@ -16,6 +15,9 @@ class Snake:
 
     def add_lenght(self):
         self.lenght += 1
+        self.SIDE += 1
+        self.COLOR[1] += 1
+        self.COLOR[1] = min(self.COLOR[1], 255)
 
     def get_snake(self):
         self.XY += [(self.x, self.y)]
