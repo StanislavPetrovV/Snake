@@ -13,6 +13,8 @@ class Game:
     SIZE = WIDTH, HEIGHT = (800, 800)
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
+    RED = (255, 0, 0)
+    GREEN = (0, 255, 0)
     fps = 20
     score = 0
 
@@ -39,6 +41,7 @@ class Game:
 
         self.font_score = pygame.font.Font(None, 22)
         self.font_end = pygame.font.Font(None, 48)
+        self.font_button = pygame.font.Font(None, 30)
 
         self.play()
 
@@ -79,7 +82,7 @@ class Game:
 
     def draw(self):
         self.surf.fill(self.BLACK)
-        self.surf.blit(self.font_score.render(f'SCORE: {self.score}', 1, (255, 165, 0)), (self.WIDTH - 80, 5))
+        self.surf.blit(self.font_score.render(f'SCORE: {self.score}', 1, (255, 165, 0)), (self.WIDTH - 90, 5))
 
         self.bg.draw(self.snake.direction)
         self.food.add_food()
@@ -97,13 +100,25 @@ class Game:
         self.sound_game_over.play()
         while True:
             self.surf.blit(self.font_end.render(f'YOUR SCORE: {self.score}', 1, (255, 165, 0)),
-                           (self.WIDTH // 2 - 130, self.HEIGHT // 3))
+                           (self.WIDTH//2 - 130, self.HEIGHT//3))
+
+            mouse_coord = pygame.mouse.get_pos()
+            mouse_events = pygame.mouse.get_pressed()
+            if self.WIDTH//2 - 50 < mouse_coord[0] < self.WIDTH//2 + 50 and self.HEIGHT//2 - 50 < mouse_coord[1] < self.HEIGHT//2 - 10:
+                pygame.draw.rect(self.surf, self.GREEN, (self.WIDTH//2 - 50, self.HEIGHT//2-50, 100, 40))
+                if mouse_events[0]:
+                    break
+            else:
+                pygame.draw.rect(self.surf, self.RED, (self.WIDTH//2 - 50, self.HEIGHT//2 - 50, 100, 40))
+            self.surf.blit(self.font_button.render('RETRY', 1, self.BLACK),
+                           (self.WIDTH // 2 - 33, self.HEIGHT // 2 - 40))
             self.clock.tick(self.fps)
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
+        Game()
 
 
 if __name__ == '__main__':
